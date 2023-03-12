@@ -2,9 +2,9 @@
   "name": "spotiyt-final",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-	"dev": "concurrently \"cd ./server && npm run server\" \"cd ./client && npm run dev\"",
+    "dev": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
