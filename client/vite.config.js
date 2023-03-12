@@ -6,7 +6,7 @@ import svgr from 'vite-plugin-svgr'
 export default defineConfig({
   server :{
     proxy: {
-      '/api': "http://localhost:5714",
+      '/api': "https://spoti-yt.vercel.app",
     }
   },
   plugins: [react(), svgr()],
