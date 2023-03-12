@@ -64,3 +64,4 @@ app.post("/api/dl", async (req, res) => {
 });
 
 app.listen(PORT);
+module.exports = app
