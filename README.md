@@ -15,13 +15,13 @@
 
 ## Features
 
-[x] No Ads
-[x] Unlimited Next 
-[ ] Responsiveness
-[ ] Downloadable songs
-[ ] Accurate songs
-[ ] Can play all songs
-[ ] Other Libraries
+- [x] No Ads
+- [x] Unlimited Next 
+- [ ] Responsiveness
+- [ ] Downloadable songs
+- [ ] Accurate songs
+- [ ] Can play all songs
+- [ ] Other Libraries
 
 ## Credits
 
