@@ -3,7 +3,7 @@ import { prominent } from "color.js";
 import axios from "axios";
 const spotifyApi = new SpotifyWebApi();
 const END_POINT = "https://api.spotify.com/v1";
-import { runInAction } from "mobx"
+import { runInAction } from "mobx";
 let spotify;
 
 export default spotify = {
@@ -15,6 +15,7 @@ export default spotify = {
   PlaylistColor: "",
   Query: {},
   Next: {},
+  previousMeta: {},
 
   set code(token) {
     window.localStorage.setItem("token", token);
@@ -23,21 +24,25 @@ export default spotify = {
   },
 
   get code() {
-    return this.token ? this.token : window.localStorage.getItem("token") ? window.localStorage.getItem("token") : null;
+    return this.token
+      ? this.token
+      : window.localStorage.getItem("token")
+      ? window.localStorage.getItem("token")
+      : null;
   },
 
   get nextSong() {
     return Object.keys(this.Next).length
       ? this.Next
       : window.localStorage.getItem("Next")
-        ? JSON.parse(window.localStorage.getItem("Next"))
-        : null;
+      ? JSON.parse(window.localStorage.getItem("Next"))
+      : null;
   },
 
   set nextSong(data) {
     runInAction(() => {
       this.Next = data;
-    })
+    });
     if (Object.keys(data).length) {
       window.localStorage.setItem("Next", data);
     } else {
@@ -113,7 +118,7 @@ export default spotify = {
           audio: res[0],
           color: res[1],
         };
-      })
+      });
       window.localStorage.setItem("Next", JSON.stringify(this.Next));
     });
   },
@@ -122,8 +127,8 @@ export default spotify = {
     return Object.keys(this.Query).length
       ? this.Query
       : window.localStorage.getItem("Queries")
-        ? JSON.parse(window.localStorage.getItem("Queries"))
-        : null;
+      ? JSON.parse(window.localStorage.getItem("Queries"))
+      : null;
   },
 
   set tab(tab) {
@@ -176,6 +181,20 @@ export default spotify = {
     }
   },
 
+  get prevMeta() {
+    return Object.keys(this.previousMeta).length
+      ? this.previousMeta
+      : window.localStorage.getItem("metadata")
+      ? JSON.parse(window.localStorage.getItem("metadata"))
+      : null;
+  },
+
+  set prevMeta(data) {
+    if (!data) return;
+    this.previousMeta = data;
+    window.localStorage.setItem("metadata", JSON.stringify(this.previousMeta));
+  },
+
   set song(data) {
     this.metadata = data;
     window.localStorage.setItem("Playing", JSON.stringify(this.metadata));
@@ -185,8 +204,8 @@ export default spotify = {
     return Object.keys(this.metadata).length
       ? this.metadata
       : window.localStorage.getItem("Playing")
-        ? JSON.parse(window.localStorage.getItem("Playing"))
-        : null;
+      ? JSON.parse(window.localStorage.getItem("Playing"))
+      : null;
   },
 
   tracksInPlaylist(id, playlistName, url) {
@@ -197,13 +216,13 @@ export default spotify = {
           name: playlistName,
           image: url,
         };
-      })
-    });
+      });
     if (url) {
       prominent(url, { format: "hex", amount: 1 }).then((color) => {
         this.PlaylistColor = color;
       });
     }
+    });
   },
 
   search(q) {
@@ -215,6 +234,10 @@ export default spotify = {
   },
 
   set track(e) {
+  	if(!e){
+  		this.metadata = {}
+  		window.localStorage.removeItem("playing")
+  	}
     request(
       e.name,
       e.artists[0].name,
@@ -232,7 +255,7 @@ export default spotify = {
           audio: res[0],
           color: res[1],
         };
-      })
+      });
       window.localStorage.setItem("Playing", JSON.stringify(this.metadata));
     });
   },

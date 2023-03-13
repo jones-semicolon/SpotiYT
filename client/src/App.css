@@ -437,14 +437,16 @@ section:has(> .icon:first-child) > .top {
   top: 1px;
 }
 
-.aud-track, .volume-group {
+.aud-track,
+.volume-group {
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
-.aud-track > *, .volume-group > *:not(.icon) {
+.aud-track > *,
+.volume-group > *:not(.icon) {
   width: 100%;
 }
 
@@ -578,6 +580,10 @@ input[type="range"]::-webkit-slider-runnable-track {
 .profile > .name {
   font-weight: bold;
   font-size: 2rem;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .profile > .followers {
   display: flex;
@@ -692,5 +698,20 @@ button:not(:nth-child(2), :nth-child(3), :nth-child(4)):active > svg {
   to {
     scale: initial;
     opacity: 1;
+  }
+}
+
+a > .icon:hover {
+  animation: click 0.5s;
+}
+
+@keyframes click {
+  from {
+    stroke: var(--mute-color);
+    scale: 0.7;
+  }
+  to {
+    stroke: inherit;
+    scale: 1;
   }
 }

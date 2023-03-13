@@ -32,6 +32,7 @@ export default observer(function Dashboard() {
           query={store.queue}
           nextSong={store.nextSong}
           store={store}
+          prevMeta={store.prevMeta}
         />
       ) : null}
     </main>

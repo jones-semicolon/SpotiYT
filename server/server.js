@@ -29,11 +29,11 @@ app.post("/api", async (req, res) => {
     let durs = [];
     let result = []
     await videos.forEach(async (video) => {
-      if (video.title.toLowerCase().includes(title.toLowerCase()) && !video.title.toLowerCase().includes("live")) {
+      if (video.title.toLowerCase().includes(title.toLowerCase()) && !video.title.toLowerCase().includes("live") && !video.title.toLowerCase().includes("instrumental")) {
         await durs.push(video.duration.seconds)
         if (video.seconds === output(durs)) {
           if (video.title.toLowerCase().includes("official")) {
-            await result.push(video)
+            await result.push(video) 
             return;
           }
           if(result.length < 1) {
@@ -47,11 +47,10 @@ app.post("/api", async (req, res) => {
       await result[0].url,
       { type: "audio", codec: "opus" },
       false
-    );
+    ); 
     res.json(streamLink);
   } catch (e) {
     res.sendStatus(400);
-    console.log(e);
   }
 });
 

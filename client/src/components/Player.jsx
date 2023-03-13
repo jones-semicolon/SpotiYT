@@ -30,6 +30,8 @@ export function Player(props) {
   const [favorite, setFavorite] = useState(false);
   const [idle, setIdle] = useState(true);
   const [loop, setLoop] = useState(false);
+  const [shuffle, setShuffle] = useState(false);
+  const [error, setError] = useState(false);
   const runOnce = useRef(true);
 
   function eventHandler(event) {
@@ -56,7 +58,15 @@ export function Player(props) {
         break;
       case "error":
         setIsPlaying(false);
-        console.log("error refresh the page");
+        setIdle(true);
+        if (props.query) setError(true);
+        if (!props.query) {
+          props.store.track = null;
+          setTimeout(() => {
+            setError(false);
+            audioRef.current.removeEventListener("error", eventHandler);
+          }, 1500);
+        }
         break;
       case "timeupdate":
         setSeek(
@@ -98,6 +108,10 @@ export function Player(props) {
       }
     };
     initQuery();
+    if (error) {
+      nextSong();
+      setError(false);
+    }
   }, [props.nextSong]);
 
   const nextSong = (e) => {
@@ -105,6 +119,7 @@ export function Player(props) {
     if (props.nextSong) {
       props.store.song = props.nextSong;
       runOnce.current = true;
+      //props.store.prevMeta = props.query[0].track;
       props.query.splice(0, 1);
       props.store.nextSong = {};
     }
@@ -121,6 +136,13 @@ export function Player(props) {
     };
     initQuery();
   }, [props.metadata]);
+
+  useEffect(() => {
+    if (shuffle) {
+      let query = shuffleQuery(props.query);
+      props.store.shuffledQueue = query;
+    }
+  }, [shuffle]);
 
   document.body.style.setProperty("--current-time", `${seek > 0 ? seek : 0}%`);
 
@@ -151,19 +173,15 @@ export function Player(props) {
   };
 
   function shareHandler() {
-    navigator
-      .share({
-        title: props.metadata.name,
-        url: props.metadata.url,
-      })
-      .then(() => {
-        console.log("Thanks for sharing!");
-      })
-      .catch(console.error);
+    navigator.share({
+      title: props.metadata.name,
+      url: props.metadata.url,
+    });
   }
 
   return (
     <>
+      {error ? <Notification /> : null}
       <audio autoPlay ref={audioRef} loop={loop} />
       {isMini ? (
         <MiniPlayer
@@ -199,6 +217,8 @@ export function Player(props) {
           nextSong={(e) => nextSong(e)}
           store={props.store}
           next={props.nextSong}
+          shuffle={shuffle}
+          setShuffle={() => (shuffle ? setShuffle(false) : setShuffle(true))}
         />
       )}
     </>
@@ -206,7 +226,7 @@ export function Player(props) {
 }
 
 function MiniPlayer(props) {
-  document.body.style.position = "initial";
+  document.body.style.overflowY = "auto";
   return (
     <div className="mini-player" onClick={props.onClick}>
       <div className="cv">
@@ -236,9 +256,9 @@ function MiniPlayer(props) {
 
 function FullPlayer(props) {
   const [queueView, setQueueView] = useState(false);
-  /*!queueView
-    ? (document.body.style.position = "initial")
-    : (document.body.style.position = "fixed");*/
+  !queueView
+    ? (document.body.style.overflow = "auto")
+    : (document.body.style.overflow = "hidden");
 
   return (
     <div className="player">
@@ -285,12 +305,16 @@ function FullPlayer(props) {
         </div>
       </div>
       <div className="controller">
-        <button className="icon">
-          <Shuffle disabled />
+        <button
+          className="icon"
+          onClick={props.setShuffle}
+          aria-selected={props.shuffle}
+        >
+          <Shuffle />
         </button>
         <button
           className="icon"
-          disabled={props.currentTime > "0:00" ? false : true}
+          disabled={props.currentTime !== "0:00" ? false : true}
         >
           <Preview onClick={() => props.setSeek(0)} />
         </button>
@@ -315,7 +339,8 @@ function FullPlayer(props) {
       <div className="bottom">
         <button
           className="icon"
-          onClick={() => downloadTrack(props.metadata.url)}
+          //onClick={() => downloadTrack(props.metadata.url)}
+          disabled
         >
           <Download />
         </button>
@@ -352,4 +377,36 @@ function toPercentage(ms, duration) {
 
 function toMs(perc, duration) {
   return Math.floor((perc / 100) * duration);
+}
+
+function shuffleQuery(cue) {
+  let currentIndex = cue.length,
+    randomIndex;
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [cue[currentIndex], cue[randomIndex]] = [
+      cue[randomIndex],
+      cue[currentIndex],
+    ];
+  }
+
+  return cue;
+}
+
+function Notification() {
+  let notifStyle = {
+    position: "fixed",
+    backgroundColor: "hsl(0 0% 3% / 0.8)",
+    inset: "50px auto 50% 50%",
+    transform: "translateX(-50%)",
+    fontWeight: 400,
+    fontSize: "1rem",
+    borderRadius: ".5rem",
+    padding: "10px 20px",
+    maxHeight: "fit-content",
+    maxWidth: "100%",
+    zIndex: "9999999",
+  };
+  return <div style={notifStyle}>Can't play this song</div>;
 }
