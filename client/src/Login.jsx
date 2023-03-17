@@ -37,6 +37,8 @@ export default function Login() {
         alignItems: "center",
         justifyContent: "center",
         gap: "20px",
+        maxWidth: "400px",
+        margin: "auto",
       }}
     >
       <h1 style={{ color: "var(--fill-color)" }}>
@@ -52,11 +54,9 @@ export default function Login() {
         Tester for our Spotify Clone, it is essential that you possess the
         necessary grant from the Developer to gain access. To acquire the grant,
         please send a direct message to the Developer on any of the available
-        platforms.
-
-        We kindly remind you to ensure that you have the appropriate permission
-        before proceeding with the testing process. Thank you for your
-        cooperation, and we hope you enjoy our Spotify Clone
+        platforms. We kindly remind you to ensure that you have the appropriate
+        permission before proceeding with the testing process. Thank you for
+        your cooperation, and we hope you enjoy our Spotify Clone
       </p>
       <div
         className="platform"

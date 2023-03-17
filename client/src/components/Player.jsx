@@ -114,6 +114,13 @@ export function Player(props) {
     }
   }, [props.nextSong]);
 
+  useEffect(() => {
+    if (error && props.nextSong) {
+      nextSong();
+      setError(false);
+    }
+  }, [props.nextSong, error]);
+
   const nextSong = (e) => {
     e?.stopPropagation();
     if (props.nextSong) {
@@ -226,7 +233,9 @@ export function Player(props) {
 }
 
 function MiniPlayer(props) {
-  document.body.style.overflowY = "auto";
+  //document.body.style.overflowY = "auto";
+  document.body.style.position = "";
+  document.body.style.top = "";
   return (
     <div className="mini-player" onClick={props.onClick}>
       <div className="cv">
@@ -256,9 +265,13 @@ function MiniPlayer(props) {
 
 function FullPlayer(props) {
   const [queueView, setQueueView] = useState(false);
-  !queueView
-    ? (document.body.style.overflow = "auto")
-    : (document.body.style.overflow = "hidden");
+  if (!queueView) {
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${window.scrollY}px`;
+  } else {
+    document.body.style.position = "";
+    document.body.style.top = "";
+  }
 
   return (
     <div className="player">
@@ -271,7 +284,7 @@ function FullPlayer(props) {
         </button>
       </div>
       <div className="cv lg">
-        <img src={props.metadata.image} alt="" />
+        <img src={props.metadata.image} alt={props.metadata.name} />
       </div>
       <div>
         <div className="info">
