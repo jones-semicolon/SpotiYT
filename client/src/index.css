@@ -42,7 +42,7 @@ a {
 body {
   min-height: 600px;
   max-height: 100vh;
-  max-height: 100dvh;
+  height: 100dvh;
   width: 100vw;
   background: hsl(0 0% 8%);
   background-image: linear-gradient(
