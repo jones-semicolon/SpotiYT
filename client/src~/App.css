@@ -1,33 +1,20 @@
 :root {
   --title-color: currentcolor;
-  --mute-color: hsl(0 0% 80%);
-  --liked-color: linear-gradient(
-    to bottom right,
-    hsl(0 60% 50%),
-    var(--fill-color)
-  );
-  --not-working: hsl(0 0% 30%);
+  --mute-color: hsl(0 0% 60% / 0.6);
   --player-color: rgb(8, 13, 13);
   --current-time: 0%;
   --fill-color: hsl(120 30% 50%);
-  --content: "";
-  --marquee-width: 100%;
 }
 
-main:not(.login) {
-  /*display: flex;
+main {
+  display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  flex-direction: column;*/
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr auto auto;
-  height: 100vh;
-  height: 100dvh;
-  min-height: 600px;
-  /*height: 100;
-  /*padding: 20px;
-  gap: 10px;*/
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 20px;
+  gap: 10px;
 }
 
 .greet {
@@ -36,21 +23,13 @@ main:not(.login) {
   margin-bottom: 20px;
 }
 
-main > section {
-  /*flex-grow: 1;*/
-  grid-area: -1 / 1 / 1 / -1;
+section {
+  flex-grow: 1;
   width: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding-block-end: 120px;
-  height: 100%;
-  overflow-y: auto;
-}
-
-section > :last-child {
-  margin-block-end: 20px;
 }
 
 .container {
@@ -65,13 +44,12 @@ section > :last-child {
   max-height: 100%;
   height: 60px;
   aspect-ratio: 1;
-  background: hsl(0 0% 10%);
+  background: hsl(0 0% 50%);
   overflow: hidden;
   position: relative;
 }
 
 .cv > img {
-  width: 100%;
   height: 100%;
 }
 
@@ -81,41 +59,17 @@ section > :last-child {
   justify-content: center;
   flex-grow: 1;
   max-width: 60%;
-  overflow: hidden;
 }
 
 .title {
   overflow: hidden;
-  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: flex;
-  gap: 20px;
-}
-
-.title.marquee::after {
-  content: var(--content);
-}
-.title.marquee {
-  width: var(--marquee-width);
-  overflow: visible;
-  text-overflow: initial;
-  animation: marquee 10s linear infinite;
-}
-
-@keyframes marquee {
-  25% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-100% - 20px));
-  }
 }
 
 .info > :is(.artist, .total),
 .secondary {
-  align-self: flex-start;
-  font-size: 0.6rem;
+  font-size: clamp(6px, 3vw, 1.5rem);
   color: var(--mute-color);
   stroke: var(--mute-color);
 }
@@ -133,7 +87,6 @@ section > :last-child {
 }
 
 nav button > .icon > svg {
-  --mute-color: hsl(0 0% 60% / 0.6);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -148,7 +101,6 @@ nav button > .icon {
 }
 
 nav {
-  grid-area: 3 / 1 / 4 / -1;
   background: linear-gradient(
     to bottom,
     transparent,
@@ -190,33 +142,33 @@ nav button {
 }
 
 nav button > div {
-  --mute-color: hsl(0 0% 60% / 0.6);
   color: var(--mute-color);
   font-size: 10px;
 }
 
 nav {
-  position: sticky;
-  inset: auto auto 0 auto;
-  /*left: 0;*/
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
   display: grid;
   grid-auto-columns: 1fr;
   grid-auto-flow: column;
   height: 8vh;
-  z-index: 99;
 }
 
 .search-container {
+  height: min(12vw, 90px);
   position: relative;
 }
 
 input[type="search"] {
   background: #000;
-  padding: 15px 15px 15px 40px;
+  padding-inline: 10px;
   position: relative;
   height: 100%;
   width: 100%;
+  padding-left: 40px;
   border-radius: 5px;
 }
 
@@ -248,7 +200,7 @@ section:has(> .icon:first-child) > .top .cv {
 }
 
 section:has(> .icon:first-child) {
-  padding-block-end: 20px;
+  padding-block-end: 0;
 }
 
 section:has(> .icon:first-child) > .top > .icon {
@@ -260,7 +212,7 @@ section:has(> .icon:first-child) > .top > .icon {
   right: 0;
 }
 section:has(> .icon:first-child) > .top {
-  margin-block: 20px 40px;
+  margin-block: 50px 40px;
   display: flex;
   justify-content: flex-start;
   align-items: flex-end;
@@ -275,7 +227,7 @@ section:has(> .icon:first-child) > .top {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .tracks-container .info {
@@ -298,15 +250,13 @@ section:has(> .icon:first-child) > .top {
   background: var(--player-color);
   background-image: linear-gradient(
     to bottom,
-    hsl(0 0% 25% / 0.4),
-    hsl(0 0% 25% / 0.4)
+    hsl(0 0% 50% / 0.4),
+    hsl(0 0% 10% / 0.8)
   );
-  position: relative;
-  /*inset: auto auto min(90px, 8vh) auto;
+  position: fixed;
+  inset: auto auto min(90px, 8vh) auto;
+  left: 50%;
   transform: translateX(-50%);
-  left: 50%;*/
-  grid-area: 2 / 1 / 2 / -1;
-  place-self: center;
   border-radius: 5px;
   overflow: hidden;
   padding: 7px;
@@ -318,20 +268,15 @@ section:has(> .icon:first-child) > .top {
 
 @keyframes popup {
   from {
-    /*bottom: 0;*/
-    top: 100%;
+    bottom: 0;
     opacity: 0;
   }
   to {
-    /*bottom: min(8vh, 90px);*/
-    top: 0;
+    bottom: min(8vh, 90px);
     opacity: 1;
   }
 }
 
-.mini-player > .info > * {
-  line-height: 16px;
-}
 .mini-player > .info {
   max-width: 55%;
 }
@@ -367,7 +312,7 @@ section:has(> .icon:first-child) > .top {
   border-right: 3px solid transparent;
   border-left: 3px solid transparent;
   border-bottom: 3px solid transparent;
-  border-top: 3px solid var(--not-working);
+  border-top: 3px solid hsl(0 0% 60% / 0.7);
   inset: 0;
   position: absolute;
   border-radius: inherit;
@@ -375,12 +320,11 @@ section:has(> .icon:first-child) > .top {
 }
 
 .player {
-  display: block;
   position: fixed;
   inset: 0;
   top: 0;
   width: 100vw;
-  max-height: 100vh;
+  height: 100vh;
   height: 100dvh;
   background: linear-gradient(
     to top,
@@ -394,7 +338,7 @@ section:has(> .icon:first-child) > .top {
   z-index: 9999;
   gap: 10px;
   padding-bottom: 20px;
-  animation: playerPop 0.5s ease-in-out;
+  animation: playerPop 0.5s ease;
 }
 
 @keyframes playerPop {
@@ -425,18 +369,9 @@ section:has(> .icon:first-child) > .top {
 }
 
 .player > .cv {
-  --size: 90%;
-  width: min(var(--size), 100vh - 300px);
-  padding-bottom: min(var(--size), 100vh - 300px);
-  margin: auto;
-  position: relative;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
-    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
-    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-}
-
-.player > .cv > img {
-  position: absolute;
+  flex-grow: 1;
+  aspect-ratio: 1;
+  margin: 20px;
 }
 
 .player > div:has(> .info) {
@@ -458,7 +393,7 @@ section:has(> .icon:first-child) > .top {
 .player .track {
   width: 100%;
   padding: 10px 20px;
-  gap: 3px;
+
   display: flex;
   flex-direction: column;
 }
@@ -492,7 +427,7 @@ section:has(> .icon:first-child) > .top {
   -webkit-filter: drop-shadow(0 0 3px white);
   filter: drop-shadow(0 0 3px white);
   /*box-shadow: 0 0 0 0 white;*/
-  transition: 0.5s;
+  transition: 0s;
 }
 
 .heart:active > svg {
@@ -634,13 +569,9 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 
 .profile > .cv {
-  width: min(50%, 100vh / 2);
-  padding-bottom: min(50%, 100vh / 2);
+  width: 50%;
+  height: 50%;
   border-radius: 50%;
-}
-
-.profile > .cv > img {
-  position: absolute;
 }
 
 .profile > .name {
@@ -704,37 +635,23 @@ input[type="range"]::-webkit-slider-runnable-track {
   filter: drop-shadow(0 0 2px var(--fill-color));
 }
 
-button:not(.controller :nth-child(2), .controller :nth-child(3), .controller
-    :nth-child(4), [disabled]):active
-  > svg {
+button:not(:nth-child(2), :nth-child(3), :nth-child(4)):active > svg {
   scale: 0.8;
   stroke: var(--mute-color);
   transition: all 0.5s;
 }
 
+[disabled] {
+  stroke: var(--mute-color);
+}
+
 .controller > [disabled]:not(:first-child, :last-child) > svg {
+  --not-working: hsl(0 0% 30%);
   stroke: var(--not-working);
   fill: var(--not-working);
 }
 
-:is(.query, .player)[aria-hidden="true"] {
-  display: none;
-  animation: playerPopOut 0.5s ease;
-}
-
-@keyframes playerPopOut {
-  from {
-    top: 0;
-    opacity: 1;
-  }
-  to {
-    top: 100%;
-    opacity: 0;
-  }
-}
-
-.query[aria-hidden="false"] {
-  display: block;
+.query {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -745,11 +662,7 @@ button:not(.controller :nth-child(2), .controller :nth-child(3), .controller
 .query > .top {
   position: fixed;
   background: #000;
-  top: 0;
   animation: flatTops 0.5s ease;
-}
-.query > .top .title {
-  display: initial;
 }
 
 @keyframes flatTops {
@@ -808,8 +721,4 @@ a > .icon:hover {
     stroke: inherit;
     scale: 1;
   }
-}
-
-:not(.mini-player) > .icon[disabled] svg {
-  stroke: var(--not-working);
 }

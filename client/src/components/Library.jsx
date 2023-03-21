@@ -1,49 +1,94 @@
 import { useState, useEffect } from "react";
 import { Thumbnail } from "../assets/Icons";
+import { IconHeartFilled } from "@tabler/icons-react";
 
 export default function Library(props) {
   //props.store.init;
   const [playlist, setPlaylist] = useState([]);
 
   useEffect(() => {
-    props.store.userPlaylists.then((playlists) => {
-      setPlaylist(playlists.items);
-    }).catch(() => {
-    	window.localStorage.removeItem("token")
-    })
+    props.store.userPlaylists
+      .then((playlists) => {
+        setPlaylist(playlists.items);
+      })
+      .catch(() => {
+        window.localStorage.removeItem("token");
+      });
   }, []);
 
-  const handlePlaylist = (id, name, image) => {
-    props.store.tracksInPlaylist(id, name, image);
+  const handlePlaylist = (item) => {
+    if (item.name.toLowerCase() === "liked songs") {
+      props.store.Playlist = {
+        name: item.name,
+        items: item.tracks.items,
+        total: item.tracks.total,
+      };
+      props.store.playlistColor = "var(--fill-color), hsl(0 60% 50%)";
+      return;
+    }
+    props.store.tracksInPlaylist(
+      item.id,
+      item.name,
+      item.images[1] ? item.images[1].url : null
+    );
   };
 
-  return playlist?.map((item, i) => {
-    return (
-      <div
-        className="container"
-        key={i}
-        onClick={() => handlePlaylist(item.id, item.name, item.images[1]?.url)}
-      >
-        <div className="cv">
-          {item.images[1] ? (
-            <img src={item.images[1].url} alt="" />
-          ) : (
-            <Thumbnail
-              style={{
-                position: "absolute",
-                inset: "50%",
-                transform: "translate(-50%, -50%)",
-                height: "60%",
-                width: "60%",
-              }}
-            />
-          )}
+  return Object.keys(playlist).length ? (
+    playlist.map((item, i) => {
+      return (
+        <div className="container" key={i} onClick={() => handlePlaylist(item)}>
+          <div
+            className="cv"
+            style={{
+              background:
+                item.name.toLowerCase() === "liked songs"
+                  ? "var(--liked-color)"
+                  : null,
+            }}
+          >
+            {item.images && item.images[1] ? (
+              <img src={item.images[1].url} alt="" />
+            ) : item.name.toLowerCase() === "liked songs" ? (
+              <IconHeartFilled
+                style={{
+                  position: "absolute",
+                  inset: "50%",
+                  transform: "translate(-50%, -50%)",
+                  height: "50%",
+                  width: "50%",
+                  fill: "white",
+                  stroke: "transparent",
+                }}
+              />
+            ) : (
+              <Thumbnail
+                style={{
+                  position: "absolute",
+                  inset: "50%",
+                  transform: "translate(-50%, -50%)",
+                  height: "60%",
+                  width: "60%",
+                }}
+              />
+            )}
+          </div>
+          <div className="info">
+            <div className="name">{item.name}</div>
+            <div className="total">{`${item.tracks.total} songs`}</div>
+          </div>
         </div>
-        <div className="info">
-          <div className="name">{item.name}</div>
-          <div className="total">{`${item.tracks.total} songs`}</div>
-        </div>
-      </div>
-    );
-  });
+      );
+    })
+  ) : (
+    <div
+      className="secondary"
+      style={{
+        fontSize: "4vw",
+        margin: "auto",
+        marginBottom: "auto",
+      }}
+    >
+      Looks like you don't have any Playlist.
+    </div>
+  );
 }

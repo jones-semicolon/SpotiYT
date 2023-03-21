@@ -39,12 +39,7 @@ export default function Login() {
         gap: "20px",
         maxWidth: "400px",
         margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-        padding: "20px",
-        height: "100vh" || "100dvh" || "100%",
       }}
-      className="login"
     >
       <h1 style={{ color: "var(--fill-color)" }}>
         <Spotify />
@@ -54,7 +49,7 @@ export default function Login() {
           <Yt />
         </span>
       </h1>
-      <p style={{ textIndent: "10%", width: "fit-content" }}>
+      <p style={{ textIndent: "10%" }}>
         Dear User, We would like to inform you that if you wish to become a
         Tester for our Spotify Clone, it is essential that you possess the
         necessary grant from the Developer to gain access. To acquire the grant,

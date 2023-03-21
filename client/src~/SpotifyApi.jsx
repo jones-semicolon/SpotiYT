@@ -153,18 +153,13 @@ export default spotify = {
     })();
   },
 
-  set playlistColor(color) {
-    this.PlaylistColor = color;
-  },
-
   get playlistColor() {
     return this.PlaylistColor;
   },
 
   set playlist(value) {
-    runInAction(() => {
-      this.Playlist = value;
-    });
+    this.Playlist = "";
+    this.PlaylistColor = "";
   },
 
   get playlist() {
@@ -173,15 +168,7 @@ export default spotify = {
 
   get userPlaylists() {
     return (async () => {
-      var data = await playlists(this.token);
-      var saved = await spotifyApi.getMySavedTracks();
-      if (saved) {
-        const total = await saved.body.total;
-        var saved = await spotifyApi.getMySavedTracks({ limit: total });
-        saved = { tracks: await saved.body, name: "Liked Songs" };
-        data.items = await [await saved, ...data.items];
-      }
-      return await data;
+      return await playlists(this.token);
     })();
   },
 
@@ -210,10 +197,6 @@ export default spotify = {
 
   set song(data) {
     this.metadata = data;
-    if (!Object.keys(data).length) {
-      window.localStorage.removeItem("Playing");
-      return;
-    }
     window.localStorage.setItem("Playing", JSON.stringify(this.metadata));
   },
 
@@ -234,11 +217,11 @@ export default spotify = {
           image: url,
         };
       });
-      if (url) {
-        prominent(url, { format: "hex", amount: 1 }).then((color) => {
-          this.PlaylistColor = color;
-        });
-      }
+    if (url) {
+      prominent(url, { format: "hex", amount: 1 }).then((color) => {
+        this.PlaylistColor = color;
+      });
+    }
     });
   },
 
@@ -251,10 +234,10 @@ export default spotify = {
   },
 
   set track(e) {
-    if (!e) {
-      this.metadata = {};
-      window.localStorage.removeItem("playing");
-    }
+  	if(!e){
+  		this.metadata = {}
+  		window.localStorage.removeItem("playing")
+  	}
     request(
       e.name,
       e.artists[0].name,

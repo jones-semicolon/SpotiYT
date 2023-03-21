@@ -1,10 +1,9 @@
-import { useRef, useEffect } from "react";
+import react from "react";
 import { Hide, Share, Clear, Remove } from "../assets/Icons";
 import { toJS } from "mobx";
 
 export default function Queries(props) {
   const data = props.query ? toJS(props.query) : null;
-  const animation = useRef(null);
 
   const clearHandle = (e) => {
     e.stopPropagation();
@@ -12,15 +11,11 @@ export default function Queries(props) {
   };
 
   const removeQueue = (index) => {
-    props.store.removeQueue = index;
+  	props.store.removeQueue = index
   };
 
   return (
-    <div
-      className="query"
-      style={{ overflowY: "auto" }}
-      aria-hidden={!props.ariaHidden}
-    >
+    <div className="query" style={{ overflowY: "auto" }}>
       <div className="top">
         <button className="icon">
           <Hide onClick={props.onClick} />
@@ -29,14 +24,10 @@ export default function Queries(props) {
           className="info"
           style={{ textAlign: "center", marginInline: "auto" }}
         >
-          <div className="secondary" style={{ marginInline: "auto" }}>
-            Now Playing
-          </div>
-          <div className="title" style={{ marginInline: "auto" }}>{props.playing}</div>
+          <div className="secondary">Now Playing</div>
+          <div className="title">{props.playing}</div>
         </div>
-        <button onClick={props.shareHandler} className="icon">
-          <Share />
-        </button>
+        <Share onClick={props.shareHandler} />
       </div>
       <div
         style={{
@@ -55,7 +46,7 @@ export default function Queries(props) {
       </div>
       {data?.map((item, i) => (
         <div className="container" key={i} style={{ padding: "20px" }}>
-          <button
+          <div
             className="icon"
             style={{ height: "100%", stroke: "var(--mute-color)" }}
             onClick={(e) => {
@@ -64,7 +55,7 @@ export default function Queries(props) {
             }}
           >
             <Remove />
-          </button>
+          </div>
           <div className="info" style={{ maxWidth: "90%" }}>
             <div className="title">{item.track.name}</div>
             <div className="artist">{item.track.artists[0].name}</div>

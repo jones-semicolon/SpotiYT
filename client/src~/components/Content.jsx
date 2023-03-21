@@ -7,34 +7,29 @@ import Playlist from "./Playlist";
 export default function Content(props) {
   return (
     <>
-      <section>
       <header>
-        {!props.playlist ? (
-          <div className="greet">
-            {props.tab === "library" ? (
-              <Greeting />
-            ) : props.tab === "search" ? (
-              "Search"
-            ) : props.tab === "profile" ? (
-              "Profile"
-            ) : null}
-          </div>
-        ) : null}
+      { !props.playlist ?
+        <div className="greet">
+          {props.tab === "library" ? (
+            <Greeting />
+          ) : props.tab === "search" ? (
+            "Search"
+          ) : props.tab === "profile" ? (
+            "Profile"
+          ) : null}
+        </div> : null}
       </header>
+      <section>
         {props.tab === "library" ? (
           props.store.playlist ? (
-            <Playlist
-              playlist={props.playlist}
-              store={props.store}
-              query={props.query}
-            />
+            <Playlist playlist={props.playlist} store={props.store} query={props.query}/>
           ) : (
             <Library store={props.store} />
           )
         ) : props.tab === "search" ? (
           <Search store={props.store} />
         ) : props.tab === "profile" ? (
-          <Profile profile={props.profile} store={props.store} />
+          <Profile profile={props.profile} store={props.store}/>
         ) : null}
       </section>
     </>

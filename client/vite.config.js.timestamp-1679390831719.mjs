@@ -1,0 +1,16 @@
+// vite.config.js
+import { defineConfig } from "file:///C:/Users/marjones/Desktop/Codes/SpotiYT-Final/client/node_modules/vite/dist/node/index.js";
+import react from "file:///C:/Users/marjones/Desktop/Codes/SpotiYT-Final/client/node_modules/@vitejs/plugin-react/dist/index.mjs";
+import svgr from "file:///C:/Users/marjones/Desktop/Codes/SpotiYT-Final/client/node_modules/vite-plugin-svgr/dist/index.mjs";
+var vite_config_default = defineConfig({
+  server: {
+    proxy: {
+      "/api": "https://spoti-yt.vercel.app"
+    }
+  },
+  plugins: [react(), svgr()]
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCJDOlxcXFxVc2Vyc1xcXFxtYXJqb25lc1xcXFxEZXNrdG9wXFxcXENvZGVzXFxcXFNwb3RpWVQtRmluYWxcXFxcY2xpZW50XCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCJDOlxcXFxVc2Vyc1xcXFxtYXJqb25lc1xcXFxEZXNrdG9wXFxcXENvZGVzXFxcXFNwb3RpWVQtRmluYWxcXFxcY2xpZW50XFxcXHZpdGUuY29uZmlnLmpzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9DOi9Vc2Vycy9tYXJqb25lcy9EZXNrdG9wL0NvZGVzL1Nwb3RpWVQtRmluYWwvY2xpZW50L3ZpdGUuY29uZmlnLmpzXCI7aW1wb3J0IHsgZGVmaW5lQ29uZmlnIH0gZnJvbSAndml0ZSdcbmltcG9ydCByZWFjdCBmcm9tICdAdml0ZWpzL3BsdWdpbi1yZWFjdCdcbmltcG9ydCBzdmdyIGZyb20gJ3ZpdGUtcGx1Z2luLXN2Z3InXG5cbi8vIGh0dHBzOi8vdml0ZWpzLmRldi9jb25maWcvXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xuICBzZXJ2ZXIgOntcbiAgICBwcm94eToge1xuICAgICAgJy9hcGknOiBcImh0dHBzOi8vc3BvdGkteXQudmVyY2VsLmFwcFwiLFxuICAgIH1cbiAgfSxcbiAgcGx1Z2luczogW3JlYWN0KCksIHN2Z3IoKV0sXG59KVxuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUE0VixTQUFTLG9CQUFvQjtBQUN6WCxPQUFPLFdBQVc7QUFDbEIsT0FBTyxVQUFVO0FBR2pCLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLFFBQVE7QUFBQSxJQUNOLE9BQU87QUFBQSxNQUNMLFFBQVE7QUFBQSxJQUNWO0FBQUEsRUFDRjtBQUFBLEVBQ0EsU0FBUyxDQUFDLE1BQU0sR0FBRyxLQUFLLENBQUM7QUFDM0IsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K

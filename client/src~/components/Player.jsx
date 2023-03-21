@@ -19,7 +19,6 @@ import {
   downloadTrack,
 } from "../SpotifyApi";
 import Queries from "./Queries";
-import { useLongPress } from "use-long-press";
 
 export function Player(props) {
   const audioRef = useRef(null);
@@ -191,68 +190,52 @@ export function Player(props) {
     <>
       {error ? <Notification /> : null}
       <audio autoPlay ref={audioRef} loop={loop} />
-      <MiniPlayer
-        audio={props.audio}
-        metadata={props.metadata}
-        onClick={() => setIsMini(false)}
-        isPlaying={isPlaying}
-        store={props.store}
-        favorite={favorite}
-        idle={idle}
-        setFavorite={(e) => favoriteState(e)}
-        setIsPlaying={(e) => playState(e)}
-      />
-      <FullPlayer
-        audio={props.audio}
-        metadata={props.metadata}
-        onClick={() => setIsMini(true)}
-        isPlaying={isPlaying}
-        setIsPlaying={(e) => playState(e)}
-        currentTime={currentTime}
-        setSeek={(e) => seekHandler(e)}
-        duration={audioRef?.current?.duration}
-        favorite={favorite}
-        formattedDuration={duration}
-        seek={seek}
-        idle={idle}
-        loop={loop}
-        setFavorite={(e) => favoriteState(e)}
-        setLoop={(e) => loopState(e)}
-        share={shareHandler}
-        query={props.query}
-        nextSong={(e) => nextSong(e)}
-        store={props.store}
-        next={props.nextSong}
-        shuffle={shuffle}
-        setShuffle={() => (shuffle ? setShuffle(false) : setShuffle(true))}
-        ariaHidden={isMini}
-      />
+      {isMini ? (
+        <MiniPlayer
+          audio={props.audio}
+          metadata={props.metadata}
+          onClick={() => setIsMini(false)}
+          isPlaying={isPlaying}
+          store={props.store}
+          favorite={favorite}
+          idle={idle}
+          setFavorite={(e) => favoriteState(e)}
+          setIsPlaying={(e) => playState(e)}
+        />
+      ) : (
+        <FullPlayer
+          audio={props.audio}
+          metadata={props.metadata}
+          onClick={() => setIsMini(true)}
+          isPlaying={isPlaying}
+          setIsPlaying={(e) => playState(e)}
+          currentTime={currentTime}
+          setSeek={(e) => seekHandler(e)}
+          duration={audioRef.current.duration}
+          favorite={favorite}
+          formattedDuration={duration}
+          seek={seek}
+          idle={idle}
+          loop={loop}
+          setFavorite={(e) => favoriteState(e)}
+          setLoop={(e) => loopState(e)}
+          share={shareHandler}
+          query={props.query}
+          nextSong={(e) => nextSong(e)}
+          store={props.store}
+          next={props.nextSong}
+          shuffle={shuffle}
+          setShuffle={() => (shuffle ? setShuffle(false) : setShuffle(true))}
+        />
+      )}
     </>
   );
 }
 
 function MiniPlayer(props) {
   //document.body.style.overflowY = "auto";
-  const body = document.body;
-  /*body.style.position = "";
-  body.style.top = "";*/
-  var element = document.querySelector(".mini-player .title");
-  if (element?.offsetWidth < element?.scrollWidth) {
-    element.classList.add("marquee");
-    body.style.setProperty(
-      "--marquee-width",
-      `${element.scrollWidth / 2 - 10}px`
-    );
-    body.style.setProperty("--content", `"${props.metadata.name}"`);
-  } else if (!element?.offsetWidth < element?.scrollWidth) {
-    body.style.setProperty(
-      "--marquee-width",
-      "100%"
-    );
-    body.style.setProperty("--content", "");
-    element?.classList?.remove("marquee");
-  }
-
+  document.body.style.position = "";
+  document.body.style.top = "";
   return (
     <div className="mini-player" onClick={props.onClick}>
       <div className="cv">
@@ -282,19 +265,16 @@ function MiniPlayer(props) {
 
 function FullPlayer(props) {
   const [queueView, setQueueView] = useState(false);
-  const bind = useLongPress(() => {
-    props.store.song = {};
-  });
-  /*if (!queueView) {
+  if (!queueView) {
     document.body.style.position = "fixed";
     document.body.style.top = `-${window.scrollY}px`;
   } else {
     document.body.style.position = "";
     document.body.style.top = "";
-  }*/
+  }
 
   return (
-    <div className="player" aria-hidden={props.ariaHidden}>
+    <div className="player">
       <div className="top">
         <button className="icon">
           <Hide onClick={props.onClick} />
@@ -354,7 +334,6 @@ function FullPlayer(props) {
         <button
           className="icon"
           onClick={(e) => props.setIsPlaying(e)}
-          {...bind()}
           disabled={props.idle}
         >
           {!props.isPlaying ? <Play /> : <Pause />}
@@ -382,14 +361,15 @@ function FullPlayer(props) {
           <Queue onClick={() => setQueueView(true)} />
         </button>
       </div>
-      <Queries
-        onClick={() => setQueueView(false)}
-        query={props.query}
-        playing={props.metadata.name}
-        shareHandler={props.share}
-        store={props.store}
-        ariaHidden={queueView}
-      />
+      {queueView ? (
+        <Queries
+          onClick={() => setQueueView(false)}
+          query={props.query}
+          playing={props.metadata.name}
+          shareHandler={props.share}
+          store={props.store}
+        />
+      ) : null}
     </div>
   );
 }
