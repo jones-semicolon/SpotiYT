@@ -1,6 +1,7 @@
 import react from "react";
 import { Add } from "../assets/Icons";
 import { formatTime, isSaved } from "../SpotifyApi";
+import { LazyLoadImage } from "react-lazy-load-image-component"
 
 export default function Track(props) {
   function handlePlay() {
@@ -16,7 +17,7 @@ export default function Track(props) {
   const addQueue = (e) => {
     e.stopPropagation();
     if (window.localStorage.getItem("Queries")) {
-      const data = {track: props.items }
+      const data = [{track: props.items }]
       props.store.addQuery = data
     } else {
       const data = [{ track: props.items }];
@@ -27,7 +28,7 @@ export default function Track(props) {
   return (
     <div className="container" onClick={handlePlay}>
       <div className="cv">
-        <img src={props.items.album.images[1].url} alt="" />
+        <LazyLoadImage src={props.items.album.images[1]?.url} alt="" />
       </div>
       <div className="info">
         <div className="title">{props.items.name}</div>

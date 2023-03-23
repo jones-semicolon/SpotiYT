@@ -81,12 +81,14 @@ export default spotify = {
 
   set addQuery(item) {
     let data;
-    if (Object.keys(this.Query).length) {
-      this.Query.push(item);
-      data = this.Query;
-    } else if (window.localStorage.getItem("Queries")) {
-      data = JSON.parse(window.localStorage.getItem("Queries"));
-      data.push(item);
+    for (const i of item) {
+      if (Object.keys(this.Query).length) {
+        this.Query.push(i);
+        data = this.Query;
+      } else if (window.localStorage.getItem("Queries")) {
+        data = JSON.parse(window.localStorage.getItem("Queries"));
+        data.push(i);
+      }
     }
     window.localStorage.setItem("Queries", JSON.stringify(data));
     this.Query = data;
@@ -296,11 +298,16 @@ async function playlists(token) {
 export function formatTime(ms) {
   let seconds = Math.floor(ms / 1000);
   let minutes = Math.floor(seconds / 60);
+  let hours = Math.floor(minutes / 60);
   seconds = seconds % 60;
+  minutes = minutes % 60;
+  if (hours && minutes < 10) {
+    minutes = `0${minutes}`;
+  }
   if (seconds < 10) {
     seconds = `0${seconds}`;
   }
-  return `${minutes}:${seconds}`;
+  return hours ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`;
 }
 
 export async function isSaved(trackId) {

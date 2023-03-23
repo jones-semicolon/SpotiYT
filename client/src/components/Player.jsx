@@ -24,6 +24,8 @@ import { useLongPress } from "use-long-press";
 export function Player(props) {
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [initTime, setInitTime] = useState(0);
+  const [initDuration, setInitDuration] = useState(0);
   const [isMini, setIsMini] = useState(true);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration, setDuration] = useState("0:00");
@@ -62,11 +64,11 @@ export function Player(props) {
         setIdle(true);
         if (props.query) setError(true);
         if (!props.query) {
-          props.store.track = null;
+            setError(true);
           setTimeout(() => {
-            setError(false);
-            audioRef.current.removeEventListener("error", eventHandler);
-          }, 1500);
+          props.store.song = {};
+          setError(false);
+          }, 2000);
         }
         break;
       case "timeupdate":
@@ -81,6 +83,10 @@ export function Player(props) {
       default:
         console.log(event.type);
     }
+    if (event.type === "timeupdate") {
+      return;
+    }
+    audioRef.current?.removeEventListener(event.type, eventHandler);
   }
 
   useEffect(() => {
@@ -92,7 +98,7 @@ export function Player(props) {
     audioRef.current?.addEventListener("play", eventHandler);
     audioRef.current.addEventListener("ended", eventHandler);
     audioRef.current.addEventListener("error", eventHandler);
-  }, []);
+  }, [isPlaying, currentTime]);
 
   useEffect(() => {
     const endEvent = (event) => {
@@ -127,7 +133,6 @@ export function Player(props) {
     if (props.nextSong) {
       props.store.song = props.nextSong;
       runOnce.current = true;
-      //props.store.prevMeta = props.query[0].track;
       props.query.splice(0, 1);
       props.store.nextSong = {};
     }
@@ -237,6 +242,7 @@ function MiniPlayer(props) {
   /*body.style.position = "";
   body.style.top = "";*/
   var element = document.querySelector(".mini-player .title");
+  //console.log(element?.offsetWidth, element?.scrollWidth);
   if (element?.offsetWidth < element?.scrollWidth) {
     element.classList.add("marquee");
     body.style.setProperty(
@@ -244,13 +250,10 @@ function MiniPlayer(props) {
       `${element.scrollWidth / 2 - 10}px`
     );
     body.style.setProperty("--content", `"${props.metadata.name}"`);
-  } else if (!element?.offsetWidth < element?.scrollWidth) {
-    body.style.setProperty(
-      "--marquee-width",
-      "100%"
-    );
+  } else if (element?.offsetWidth >= element?.scrollWidth) {
+    body.style.setProperty("--marquee-width", "100%");
     body.style.setProperty("--content", "");
-    element?.classList?.remove("marquee");
+    element?.classList.remove("marquee");
   }
 
   return (
@@ -395,13 +398,18 @@ function FullPlayer(props) {
 }
 
 function formatTime(ms) {
-  const min = Math.floor(ms / 60);
   let sec = Math.floor(ms);
+  let min = Math.floor(ms / 60);
+  let hr = Math.floor(min / 60);
   sec = sec % 60;
+  min = min % 60;
+  if (hr && min < 10) {
+    min = `0${min}`;
+  }
   if (sec < 10) {
     sec = `0${sec}`;
   }
-  return `${min}:${sec}`;
+  return hr ? `${hr}:${min}:${sec}` : `${min}:${sec}`;
 }
 
 function toPercentage(ms, duration) {

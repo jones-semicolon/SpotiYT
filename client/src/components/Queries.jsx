@@ -32,7 +32,9 @@ export default function Queries(props) {
           <div className="secondary" style={{ marginInline: "auto" }}>
             Now Playing
           </div>
-          <div className="title" style={{ marginInline: "auto" }}>{props.playing}</div>
+          <div className="title" style={{ marginInline: "auto" }}>
+            {props.playing}
+          </div>
         </div>
         <button onClick={props.shareHandler} className="icon">
           <Share />
@@ -48,7 +50,9 @@ export default function Queries(props) {
           alignItems: "center",
         }}
       >
-        <div className="secondary">Next in Queue</div>
+        <div className="secondary" style={{ marginBlock: "auto" }}>
+          Next in Queue
+        </div>
         <button className="icon">
           <Clear onClick={clearHandle} className="secondary" />
         </button>

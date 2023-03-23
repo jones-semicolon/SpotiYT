@@ -28,7 +28,7 @@ export default function Search(props) {
           onChange={(e) => setQuery(e.target.value)}
         />
       </div>
-      <div className="tracks-container">
+      <section className="tracks-container">
         {search?.map((track, i) => (
           <Track
             key={i}
@@ -37,7 +37,7 @@ export default function Search(props) {
             store={props.store}
           />
         ))}
-      </div>
+      </section>
     </>
   );
 }

@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
 import { Thumbnail } from "../assets/Icons";
 import { IconHeartFilled } from "@tabler/icons-react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 export default function Library(props) {
   //props.store.init;
   const [playlist, setPlaylist] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     props.store.userPlaylists
       .then((playlists) => {
         setPlaylist(playlists.items);
+        setLoading(false);
       })
-      .catch(() => {
+      .catch((e) => {
         window.localStorage.removeItem("token");
+        window.location = "/";
       });
   }, []);
 
@@ -47,7 +51,7 @@ export default function Library(props) {
             }}
           >
             {item.images && item.images[1] ? (
-              <img src={item.images[1].url} alt="" />
+              <LazyLoadImage src={item.images[1].url} alt="" />
             ) : item.name.toLowerCase() === "liked songs" ? (
               <IconHeartFilled
                 style={{
@@ -79,7 +83,7 @@ export default function Library(props) {
         </div>
       );
     })
-  ) : (
+  ) : !loading ? (
     <div
       className="secondary"
       style={{
@@ -89,6 +93,18 @@ export default function Library(props) {
       }}
     >
       Looks like you don't have any Playlist.
+    </div>
+  ) : (
+    <Loading />
+  );
+}
+
+function Loading() {
+  return (
+    <div className="loading">
+      <span></span>
+      <span></span>
+      <span></span>
     </div>
   );
 }

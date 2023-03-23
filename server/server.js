@@ -14,10 +14,16 @@ app.get("/*", (req, res) => {
 });
 
 app.post("/api", async (req, res) => {
+  let artistList = ["savella - topic"];
   var title = await req.body.title;
   var artist = await req.body.artist;
+  for (const item of artistList) {
+    if (item.includes(artist.toLowerCase())) {
+      artist = item;
+    }
+  }
   var goal = Math.round(req.body.duration / 1000);
-  var query = artist + " - " + title + " official";
+  var query = artist + " - " + title;
   let Youtube = new MusicSearch.Youtube();
 
   const output = (arr) =>
@@ -29,31 +35,83 @@ app.post("/api", async (req, res) => {
     const videos = r.videos;
     let durs = [];
     let result = [];
-    await videos.forEach(async (video) => {
+    let newDurs = [];
+    let exclude = [
+      "live",
+      "instrumental",
+      "karaoke",
+      "tutorial",
+      "cover",
+      "loop",
+      "remix",
+    ];
+    let excludeChannel = ["onemusicph"];
+    await exclude.forEach(async (ex, index) => {
+      if (title.toLowerCase().includes(ex)) {
+        await exclude.splice(index, 1);
+      }
+      await videos.map(async (vid, i) => {
+        if (vid.title.toLowerCase().includes(ex)) {
+          //console.log(vid);
+          await videos.splice(i, 1);
+        }
+      });
+    });
+
+    const vid = await videos.map(async (video, vidInd) => {
+      const vidTitle = await video.title.toLowerCase();
+
       if (
-        video.title.toLowerCase().includes(title.replace(/\([^()]*\)|\s-.*/g, "").toLowerCase()) &&
-        !video.title.toLowerCase().includes("live") &&
-        !video.title.toLowerCase().includes("instrumental")
+        (await vidTitle.includes(
+          title.replace(/\([^()]*\)|\s-.*/g, "").toLowerCase()
+        )) &&
+        (await !excludeChannel.includes(video.author.name.toLowerCase()))
       ) {
         await durs.push(video.duration.seconds);
-        if (video.seconds === output(durs)) {
-          if (video.title.toLowerCase().includes("official")) {
+
+        if (
+          vidTitle.includes("official") ||
+          video.author.name.toLowerCase().includes(artist.toLowerCase()) ||
+          vidTitle.toLowerCase().includes(artist.toLowerCase())
+        ) {
+          //console.log(video);
+          await newDurs.push(video.seconds);
+          if (video.seconds === output(newDurs)) {
             await result.push(video);
-            return;
+            return await video;
           }
-          if (result.length < 1) {
-            await result.push(video);
-          }
+        }
+        if (
+          !result.length &&
+          video.seconds === output(durs) &&
+          !newDurs.length
+        ) {
+          console.log("hello");
+          //await result.push(video);
+          return await video;
         }
       }
     });
 
-    let streamLink = await Youtube.streamLink(
-      await result[0].url,
-      { type: "audio", codec: "opus" },
-      false
-    );
-    res.json(streamLink);
+    Promise.all(vid)
+      .then(async (vidRes) => {
+        vidRes = vidRes.filter((v) => typeof v !== "undefined");
+        if (vidRes.length) {
+          await console.log(vidRes);
+          let streamLink = await Youtube.streamLink(
+            await vidRes[0].url,
+            { type: "audio", codec: "opus" },
+            false
+          );
+          res.json(streamLink);
+          return;
+        } else {
+          res.json(null);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   } catch (e) {
     res.sendStatus(400);
   }

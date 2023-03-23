@@ -42,7 +42,7 @@ a {
 body {
   min-height: 600px;
   max-height: 100vh;
-  height: 100dvh;
+  max-height: 100dvh;
   width: 100vw;
   background: hsl(0 0% 8%);
   background-image: linear-gradient(
@@ -52,7 +52,6 @@ body {
   );
   background-repeat: no-repeat;
   background-attachment: fixed;
-  overflow-y: auto;
 }
 
 button,

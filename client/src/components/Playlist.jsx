@@ -2,7 +2,11 @@ import react from "react";
 import { toJS } from "mobx";
 import Track from "./Track";
 import { Hide, Play, Thumbnail } from "../assets/Icons";
-import { IconHeartFilled } from "@tabler/icons-react";
+import {
+  IconHeartFilled,
+  IconDotsVertical,
+  IconTextPlus,
+} from "@tabler/icons-react";
 
 export default function Playlist(props) {
   const data = toJS(props.playlist);
@@ -12,29 +16,33 @@ export default function Playlist(props) {
     props.store.queue = data.items;
   }
 
+  function addQuery() {
+    if (window.localStorage.getItem("Queries")) {
+      props.store.addQuery = data.items;
+    } else {
+      props.store.queue = data.items;
+    }
+  }
+
   return (
-    <section>
-      <button
-        style={{
-          rotate: "90deg",
-          position: "sticky",
-          backgroundColor: "hsl(0 0% 20% / .6)",
-          padding: "10px",
-          borderRadius: "50%",
-          zIndex: 2,
-          maxWidth: "40px",
-          top: 0,
-          maxHeight: "40px",
-        }}
-        className="icon"
-      >
-        <Hide
-          onClick={(e) => {
-            e.stopPropagation;
-            props.store.playlist = "";
-          }}
-        />
-      </button>
+    <section className="playlist">
+      <div className="nav">
+        <button className="icon" style={{ rotate: "90deg" }}>
+          <Hide
+            onClick={(e) => {
+              e.stopPropagation;
+              props.store.playlist = "";
+            }}
+          />
+        </button>
+        <button
+          className="icon"
+          style={{ rotate: "180deg" }}
+          onClick={addQuery}
+        >
+          <IconTextPlus />
+        </button>
+      </div>
       <div className="top">
         <div
           className="cv"

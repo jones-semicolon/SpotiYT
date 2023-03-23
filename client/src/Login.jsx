@@ -42,7 +42,7 @@ export default function Login() {
         display: "flex",
         flexDirection: "column",
         padding: "20px",
-        height: "100vh" || "100dvh" || "100%",
+        height: "100dvh",
       }}
       className="login"
     >
