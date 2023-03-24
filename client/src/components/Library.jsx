@@ -20,27 +20,10 @@ export default function Library(props) {
       });
   }, []);
 
-  const handlePlaylist = (item) => {
-    if (item.name.toLowerCase() === "liked songs") {
-      props.store.Playlist = {
-        name: item.name,
-        items: item.tracks.items,
-        total: item.tracks.total,
-      };
-      props.store.playlistColor = "var(--fill-color), hsl(0 60% 50%)";
-      return;
-    }
-    props.store.tracksInPlaylist(
-      item.id,
-      item.name,
-      item.images[1] ? item.images[1].url : null
-    );
-  };
-
   return Object.keys(playlist).length ? (
     playlist.map((item, i) => {
       return (
-        <div className="container" key={i} onClick={() => handlePlaylist(item)}>
+        <div className="container" key={i} onClick={() => props.onClick(item)}>
           <div
             className="cv"
             style={{

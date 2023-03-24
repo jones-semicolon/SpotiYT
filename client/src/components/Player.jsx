@@ -64,10 +64,10 @@ export function Player(props) {
         setIdle(true);
         if (props.query) setError(true);
         if (!props.query) {
-            setError(true);
+          setError(true);
           setTimeout(() => {
-          props.store.song = {};
-          setError(false);
+            props.store.song = {};
+            setError(false);
           }, 2000);
         }
         break;
@@ -83,7 +83,7 @@ export function Player(props) {
       default:
         console.log(event.type);
     }
-    if (event.type === "timeupdate") {
+    if (event.type === "timeupdate" || event.type === "error") {
       return;
     }
     audioRef.current?.removeEventListener(event.type, eventHandler);
@@ -148,6 +148,7 @@ export function Player(props) {
       }
     };
     initQuery();
+    //console.log(props.metadata);
   }, [props.metadata]);
 
   useEffect(() => {
@@ -237,33 +238,51 @@ export function Player(props) {
 }
 
 function MiniPlayer(props) {
-  //document.body.style.overflowY = "auto";
-  const body = document.body;
-  /*body.style.position = "";
-  body.style.top = "";*/
+  const runOnce = useRef(false);
+  const [content, setContent] = useState("");
   var element = document.querySelector(".mini-player .title");
-  //console.log(element?.offsetWidth, element?.scrollWidth);
-  if (element?.offsetWidth < element?.scrollWidth) {
-    element.classList.add("marquee");
-    body.style.setProperty(
-      "--marquee-width",
-      `${element.scrollWidth / 2 - 10}px`
-    );
-    body.style.setProperty("--content", `"${props.metadata.name}"`);
-  } else if (element?.offsetWidth >= element?.scrollWidth) {
-    body.style.setProperty("--marquee-width", "100%");
-    body.style.setProperty("--content", "");
+  useEffect(() => {
+    const marquee = () => {
+      if (!runOnce.current) return;
+      console.log(element?.classList, element?.classList.length === 1);
+      if (
+        element?.offsetWidth < element?.scrollWidth &&
+        runOnce.current &&
+        element?.classList.length < 2
+      ) {
+        element.classList.add("marquee");
+        document.body.style.setProperty(
+          "--marquee-width",
+          `${element.scrollWidth}px`
+        );
+        document.body.style.setProperty(
+          "--content",
+          `"${props.metadata.name}"`
+        );
+        runOnce.current = false;
+      } 
+    };
+    document.body.style.setProperty("--marquee-width", "100%");
+        
+        document.body.style.setProperty("--content", "");
     element?.classList.remove("marquee");
-  }
+    marquee();
+    return () => {
+      runOnce.current = true;
+    };
+  }, [props.metadata]);
 
   return (
     <div className="mini-player" onClick={props.onClick}>
       <div className="cv">
-        <img src={props.metadata.image} alt="" />
+        <img
+          src={props.metadata.image[props.metadata.image.length - 1].url}
+          alt={props.metadata.name}
+        />
       </div>
       <div className="info">
         <div className="title">{props.metadata.name}</div>
-        <div className="artist">{props.metadata.artists}</div>
+        <div className="artist">{props.metadata.artists[0].name}</div>
       </div>
       <button
         className="icon heart"
@@ -288,13 +307,6 @@ function FullPlayer(props) {
   const bind = useLongPress(() => {
     props.store.song = {};
   });
-  /*if (!queueView) {
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${window.scrollY}px`;
-  } else {
-    document.body.style.position = "";
-    document.body.style.top = "";
-  }*/
 
   return (
     <div className="player" aria-hidden={props.ariaHidden}>
@@ -307,12 +319,14 @@ function FullPlayer(props) {
         </button>
       </div>
       <div className="cv lg">
-        <img src={props.metadata.image} alt={props.metadata.name} />
+        <img src={props.metadata.image[0].url} alt={props.metadata.name} />
       </div>
       <div>
         <div className="info">
           <div className="title">{props.metadata.name}</div>
-          <div className="artist">{props.metadata.artists}</div>
+          <div className="artist">
+            {props.metadata?.artists?.map((v) => v.name).join(", ")}
+          </div>
         </div>
         <button
           className="icon heart"

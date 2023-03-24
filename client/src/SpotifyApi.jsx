@@ -113,8 +113,8 @@ export default spotify = {
         this.Next = {
           id: que[0].track.id,
           name: que[0].track.name,
-          artists: que[0].track.artists.map((v) => v.name).join(", "),
-          image: que[0].track.album.images[1].url,
+          artists: que[0].track.artists,
+          image: que[0].track.album.images,
           duration: que[0].track.duration_ms,
           url: que[0].track.external_urls.spotify,
           audio: res[0],
@@ -228,20 +228,30 @@ export default spotify = {
   },
 
   tracksInPlaylist(id, playlistName, url) {
-    spotifyApi.getPlaylistTracks(id, { field: "items" }).then((data) => {
-      runInAction(() => {
-        this.Playlist = {
-          ...data.body,
-          name: playlistName,
-          image: url,
-        };
-      });
-      if (url) {
-        prominent(url, { format: "hex", amount: 1 }).then((color) => {
-          this.PlaylistColor = color;
+    return (async () => {
+      let data = await spotifyApi.getPlaylistTracks(id, { field: "items" });
+      let offset = 0;
+      let nextLink = data.body.next;
+      while (nextLink !== null) {
+        let next = await spotifyApi.getPlaylistTracks(id, {
+          field: "items",
+          offset: (offset += 100),
         });
+        nextLink = await next.body.next;
+        (await next?.body?.items?.length)
+          ? await data.body.items.push(...next.body.items)
+          : null;
       }
-    });
+      const color = url
+        ? await prominent(url, { format: "hex", amount: 1 })
+        : null;
+      return await {
+        ...data.body,
+        name: playlistName,
+        image: url,
+        color,
+      };
+    })();
   },
 
   search(q) {
@@ -267,8 +277,8 @@ export default spotify = {
         this.metadata = {
           id: e.id,
           name: e.name,
-          artists: e.artists.map((v) => v.name).join(", "),
-          image: e.album.images[1].url,
+          artists: e.artists, //.join(", "),
+          image: e.album.images,
           duration: e.duration_ms,
           url: e.external_urls.spotify,
           audio: res[0],

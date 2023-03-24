@@ -1,4 +1,4 @@
-import react from "react";
+import { useEffect, useState } from "react";
 import { toJS } from "mobx";
 import Track from "./Track";
 import { Hide, Play, Thumbnail } from "../assets/Icons";
@@ -10,10 +10,35 @@ import {
 
 export default function Playlist(props) {
   const data = toJS(props.playlist);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  const controlNavbar = (e) => {
+    if (typeof e !== "undefined") {
+      const target = e.target;
+      if (target.scrollTop > lastScrollY) {
+        document.body.style.setProperty("--scroll", "250%");
+        setTimeout(() => {
+          document.body.style.setProperty("--scroll", "0%");
+        }, 500);
+      }
+      setLastScrollY(target.scrollTop);
+    }
+  };
+
+  useEffect(() => {
+    const main = document.querySelector("section.playlist");
+    if (typeof main !== "undefined") {
+      main.addEventListener("scroll", controlNavbar);
+
+      return () => {
+        main.removeEventListener("scroll", controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
   function handleQueue() {
     props.store.track = data.items[0]?.track;
-    data.items.splice(0, 1);
-    props.store.queue = data.items;
+    const filtered = data.items.filter((v) => data.items.indexOf(v) !== 0);
+    props.store.queue = filtered;
   }
 
   function addQuery() {
@@ -25,15 +50,16 @@ export default function Playlist(props) {
   }
 
   return (
-    <section className="playlist">
+    <section
+      className="playlist"
+      style={{
+        backgroundImage: `linear-gradient(to top,hsl(0 0% 8%) 60%,${props.playlist.color} 100%)`,
+      }}
+      aria-hidden={props.ariaHidden}
+    >
       <div className="nav">
         <button className="icon" style={{ rotate: "90deg" }}>
-          <Hide
-            onClick={(e) => {
-              e.stopPropagation;
-              props.store.playlist = "";
-            }}
-          />
+          <Hide onClick={props.setPlaylist} />
         </button>
         <button
           className="icon"
@@ -88,9 +114,9 @@ export default function Playlist(props) {
         </button>
       </div>
       <div className="tracks-container">
-        {data.items.map((item) => (
+        {data.items.map((item, i) => (
           <Track
-            key={item.track.id}
+            key={i}
             items={item.track}
             selectedTrack={(e) => (props.store.track = e)}
             store={props.store}
