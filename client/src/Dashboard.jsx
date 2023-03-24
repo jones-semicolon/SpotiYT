@@ -9,6 +9,7 @@ export default observer(function Dashboard() {
   const store = useLocalObservable(() => SpotifyApi);
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const titles = document.querySelectorAll(".title");
 
   const controlNavbar = (e) => {
     if (typeof e !== "undefined") {
@@ -33,6 +34,27 @@ export default observer(function Dashboard() {
       };
     }
   }, [lastScrollY]);
+
+  /*titles?.map((element) => {
+    if (
+      element?.offsetWidth < element?.scrollWidth &&
+      element?.classList.length < 2
+    ) {
+      element.classList.add("marquee");
+      document.body.style.setProperty(
+        "--marquee-width",
+        `${element.scrollWidth}px`
+      );
+      document.body.style.setProperty(
+        "--animation-duration",
+        `${element.scrollWidth / 20}s`
+      );
+      document.body.style.setProperty("--content", `"${props.metadata.name}"`);
+    }
+    document.body.style.removeProperty("--marquee-width", "100%");
+    document.body.style.removeProperty("--content", "");
+    element?.classList.remove("marquee");
+  });*/
 
   store.track?.color || store.PlaylistColor
     ? document.body.style.setProperty(

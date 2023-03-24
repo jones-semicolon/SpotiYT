@@ -44,15 +44,18 @@ app.post("/api", async (req, res) => {
       "cover",
       "loop",
       "remix",
+      "concert",
     ];
-    let excludeChannel = ["onemusicph"];
+    let excludeChannel = ["onemusicph", "smugglaz tv"];
     await exclude.forEach(async (ex, index) => {
       if (title.toLowerCase().includes(ex)) {
         await exclude.splice(index, 1);
       }
       await videos.map(async (vid, i) => {
-        if (vid.title.toLowerCase().includes(ex)) {
-          //console.log(vid);
+        if (
+          vid.title.toLowerCase().includes(ex) ||
+          vid.description.toLowerCase().includes(ex)
+        ) {
           await videos.splice(i, 1);
         }
       });
@@ -86,7 +89,7 @@ app.post("/api", async (req, res) => {
           video.seconds === output(durs) &&
           !newDurs.length
         ) {
-          console.log("hello");
+          //console.log("hello");
           //await result.push(video);
           return await video;
         }
@@ -97,7 +100,7 @@ app.post("/api", async (req, res) => {
       .then(async (vidRes) => {
         vidRes = vidRes.filter((v) => typeof v !== "undefined");
         if (vidRes.length) {
-          await console.log(vidRes);
+          //await console.log(vidRes);
           let streamLink = await Youtube.streamLink(
             await vidRes[0].url,
             { type: "audio", codec: "opus" },

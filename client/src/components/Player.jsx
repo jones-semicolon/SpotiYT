@@ -238,16 +238,11 @@ export function Player(props) {
 }
 
 function MiniPlayer(props) {
-  const runOnce = useRef(false);
-  const [content, setContent] = useState("");
   var element = document.querySelector(".mini-player .title");
   useEffect(() => {
     const marquee = () => {
-      if (!runOnce.current) return;
-      console.log(element?.classList, element?.classList.length === 1);
       if (
         element?.offsetWidth < element?.scrollWidth &&
-        runOnce.current &&
         element?.classList.length < 2
       ) {
         element.classList.add("marquee");
@@ -256,20 +251,19 @@ function MiniPlayer(props) {
           `${element.scrollWidth}px`
         );
         document.body.style.setProperty(
+          "--animation-duration",
+          `${element.scrollWidth / 20}s`
+        );
+        document.body.style.setProperty(
           "--content",
           `"${props.metadata.name}"`
         );
-        runOnce.current = false;
-      } 
+      }
     };
-    document.body.style.setProperty("--marquee-width", "100%");
-        
-        document.body.style.setProperty("--content", "");
+    document.body.style.removeProperty("--marquee-width", "100%");
+    document.body.style.removeProperty("--content", "");
     element?.classList.remove("marquee");
     marquee();
-    return () => {
-      runOnce.current = true;
-    };
   }, [props.metadata]);
 
   return (

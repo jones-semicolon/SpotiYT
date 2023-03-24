@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { Hide, Share, Clear, Remove } from "../assets/Icons";
 import { toJS } from "mobx";
+import { useLongPress } from "use-long-press";
 
 export default function Queries(props) {
   const data = props.query ? toJS(props.query) : null;
@@ -13,6 +14,16 @@ export default function Queries(props) {
 
   const removeQueue = (index) => {
     props.store.removeQueue = index;
+  };
+
+  /*const bind = useLongPress(({ target }) => {
+    const container = target.closest(".container");
+    container.classList.add("marked");
+  });*/
+
+  const clickHandler = (item, i) => {
+    removeQueue(i);
+    props.store.track = item.track;
   };
 
   return (
@@ -58,7 +69,13 @@ export default function Queries(props) {
         </button>
       </div>
       {data?.map((item, i) => (
-        <div className="container" key={i} style={{ padding: "20px" }}>
+        <div
+          className="container"
+          key={i}
+          style={{ padding: "20px" }}
+          //{...bind()}
+          onClick={() => clickHandler(item, i)}
+        >
           <button
             className="icon"
             style={{ height: "100%", stroke: "var(--mute-color)" }}

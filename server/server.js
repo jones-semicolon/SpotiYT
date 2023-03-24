@@ -62,6 +62,7 @@ app.post("/api", async (req, res) => {
     });
 
     const vid = await videos.map(async (video, vidInd) => {
+    	//console.log(video)
       const vidTitle = await video.title.toLowerCase();
 
       if (
@@ -79,16 +80,17 @@ app.post("/api", async (req, res) => {
         ) {
           //console.log(video);
           await newDurs.push(video.seconds);
-          if (video.seconds === output(newDurs)) {
+          if (
+            video.seconds === output(newDurs) &&
+            (video.author.name.toLowerCase().includes(artist.toLowerCase()) ||
+              vidTitle.toLowerCase().includes(artist.toLowerCase()) ||
+              video.description.toLowerCase().includes(artist.toLowerCase()))
+          ) {
             await result.push(video);
             return await video;
           }
         }
-        if (
-          !result.length &&
-          video.seconds === output(durs) &&
-          !newDurs.length
-        ) {
+        if (!result.length && video.seconds === output(durs)) {
           //console.log("hello");
           //await result.push(video);
           return await video;
@@ -106,10 +108,9 @@ app.post("/api", async (req, res) => {
             { type: "audio", codec: "opus" },
             false
           );
-          res.json(streamLink);
-          return;
+          return res.json(streamLink);
         } else {
-          res.json(null);
+          return res.json(null);
         }
       })
       .catch((e) => {

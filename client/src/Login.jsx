@@ -37,7 +37,6 @@ export default function Login() {
         alignItems: "center",
         justifyContent: "center",
         gap: "20px",
-        maxWidth: "400px",
         margin: "auto",
         display: "flex",
         flexDirection: "column",
@@ -164,6 +163,7 @@ export default function Login() {
           width: "90%",
           textIndent: "2ch",
           color: "var(--mute-color)",
+          maxWidth: "fit-content"
         }}
       >
         This is just a beta expect some crash and bugs, you can go to my{" "}

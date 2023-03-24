@@ -7,12 +7,10 @@
     var(--fill-color)
   );
   --not-working: hsl(0 0% 30%);
-  --player-color: rgb(8, 13, 13);
-  --light-player-color: rgb(8, 13, 13);
   --current-time: 0%;
   --fill-color: hsl(120 30% 50%);
-  --content: "";
-  --marquee-width: 100%;
+  /*--content: "";
+  --marquee-width: 100%;*/
   --scroll: 0%;
 }
 
@@ -104,7 +102,7 @@ main > section {
   display: flex;
   overflow: visible;
   text-overflow: initial;
-  animation: marquee 10s linear infinite;
+  animation: marquee var(--animation-duration, 10s) linear infinite;
 }
 
 @keyframes marquee {
@@ -125,6 +123,7 @@ main > section {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .icon:has(> svg) {
@@ -212,7 +211,6 @@ nav {
   display: grid;
   grid-auto-columns: 1fr;
   grid-auto-flow: column;
-  height: 8vh;
   z-index: 99;
 }
 
@@ -255,6 +253,9 @@ section.playlist > .top .name {
 
 section.playlist > .top .cv {
   height: 100px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+    rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+    rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 section.playlist[aria-hidden="false"] {
@@ -343,7 +344,7 @@ body:has(.mini-player) .container:last-child {
 .mini-player {
   height: 55px;
   width: 90%;
-  background: var(--player-color);
+  background: var(--player-color, rgb(8, 13, 13));
   background-image: linear-gradient(
     to bottom,
     hsl(0 0% 25% / 0.4),
@@ -441,7 +442,7 @@ body:has(.mini-player) .container:last-child {
     to top,
     hsl(0 0% 0%),
     hsl(0 0% 0%) 20%,
-    var(--player-color) 100%
+    var(--player-color, rgb(8, 13, 13)) 100%
   );
   display: flex;
   flex-direction: column;
@@ -628,7 +629,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 
 .controller > :nth-child(3) {
-  background: var(--player-color);
+  background: var(--player-color, rgb(8, 13, 13));
   background-image: linear-gradient(hsl(0 0% 40% / 0.6), hsl(0 0% 40% / 0.6));
   border-radius: 50%;
   padding: 35px;
@@ -808,6 +809,10 @@ button:not(.controller :nth-child(2), .controller :nth-child(3), .controller
   display: initial;
 }
 
+.query .container.marked {
+  border-left: 1.5px solid var(--fill-color);
+}
+
 @keyframes flatTops {
   from {
     top: -100px;
@@ -881,8 +886,8 @@ a > .icon:hover {
   height: 15px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: hsl(0 0% 40%);
-  animation: load 2s ease infinite;
+  background-color: hsl(0 0% 80% / 0.4);
+  animation: load 2s ease-in-out infinite;
 }
 
 .loading span:nth-child(2) {
@@ -898,7 +903,7 @@ a > .icon:hover {
     scale: 1;
   }
   25% {
-    scale: 1.1;
-    background-color: hsl(0 0% 60%);
+    scale: 1.2;
+    background-color: hsl(0 0% 80%);
   }
 }
